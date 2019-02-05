@@ -85,6 +85,57 @@ def broadcast_transaction():
         return jsonify(response), 500
 
 
+@app.route('/getData', methods=['POST'])
+def getData():
+    values = request.get_json()
+    load_keys()
+    # print(values)
+    # if not values:
+    #     response = {'message': 'No data found.'}
+    #     return jsonify(response), 400
+    # if 'image' not in values:
+    if desk.public_key == None:
+        response = {
+            'message': 'No wallet set up.'
+        }
+        return jsonify(response), 400
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data found.'
+        }
+        return jsonify(response), 400
+    required_fields = ['imageText', 'image']
+    if not all(field in values for field in required_fields):
+        response = {
+            'message': 'Required data is missing.'
+        }
+        return jsonify(response), 400
+    image = values['image']
+    imageText = values['imageText']
+    signature = desk.sign_transaction(desk.public_key, image, imageText)
+    success = blockchain.add_transaction(
+        desk.public_key,image, imageText, signature)
+    if success:
+        response = {
+            'message': 'Successfully added transaction.',
+            'transaction': {
+                'official': desk.public_key,
+                'image': image,
+                'imageText':imageText,
+                'signature': signature
+            }
+        }
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Creating a transaction failed.'
+        }
+        return jsonify(response), 500
+    #     return jsonify(response), 400
+    #
+
+    #
 @app.route('/broadcast-block', methods=['POST'])
 def broadcast_block():
     values = request.get_json()

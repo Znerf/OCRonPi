@@ -1,0 +1,120 @@
+<<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="stuff, to, help, search, engines, not" name="keywords">
+<meta content="What this page is about." name="description">
+<meta content="Display Webcam Stream" name="title">
+<title>Display Webcam Stream</title>
+
+<style>
+#container {
+    margin: 0px auto;
+    width: 500px;
+    height: 375px;
+    border: 10px #333 solid;
+}
+#videoElement {
+    width: 500px;
+    height: 375px;
+    background-color: #666;
+}
+</style>
+</head>
+
+<body>
+<div id="container">
+    <video autoplay="true" id="videoElement">
+
+    </video>
+    <button type="button" onclick="run()">Click Me!</button>
+
+
+</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<div class="" >
+  <canvas></canvas>
+
+</div>
+<script>
+
+</script>
+</body>
+</html>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+ <script>
+  var a;
+  var video = document.querySelector("#videoElement");
+
+  if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({video: true})
+    .then(function(stream) {
+      video.srcObject = stream;
+      a=stream;
+    })
+    .catch(function(err0r) {
+      console.log("Something went wrong!");
+    });
+  }
+
+  function run(){
+      //track=a.srcObject.getVideoTracks()[0]
+      // //console.log(imageCapture)
+       const canvas = document.querySelector('canvas');
+      track = a.getVideoTracks()[0];
+      var imageCapture = new ImageCapture(track);
+
+      imageCapture.grabFrame()
+        .then(processFrame)
+        .catch(err => console.error('grabFrame() failed: ', err));
+
+        // var interval;
+        // var track;
+        //
+        // navigator.mediaDevices.getUserMedia({video: true})
+        //   .then(gotMedia)
+        //   .catch(err => console.error('getUserMedia() failed: ', err));
+        //
+        // function gotMedia(mediastream) {
+        //   track = mediastream.getVideoTracks()[0];
+        //   var imageCapture = new ImageCapture(track);
+        // //  interval = setInterval(function () {
+        //     imageCapture.grabFrame()
+        //       .then(processFrame)
+        //       .catch(err => console.error('grabFrame() failed: ', err));
+        // //  }, 1000);
+        // }
+        //
+        function processFrame(imgData) {
+          canvas.width = imgData.width;
+          canvas.height = imgData.height;
+          canvas.getContext('2d').drawImage(imgData, 0, 0);
+  //        var img = new Image();
+        //  img.src = canvas.toDataURL('image/jpeg');
+
+         var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+
+          ////window.location.href=image;
+
+          // link.href = canvas.toDataURL();
+          // link.download = "mypainting.png";
+        //  window.open(image.src)
+        //   canvas.toBlob(function(blob) {
+        //     saveAs(blob, "pretty image.png");
+        // });
+          axios.post('/check', {
+              image: image
+          })
+
+          console.log(image)
+        }
+
+      // Other browsers will fall back to image/png
+    //  img.src = canvas.toDataURL('image/webp');
+
+    }
+
+ </script>
