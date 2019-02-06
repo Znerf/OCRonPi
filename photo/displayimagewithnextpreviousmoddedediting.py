@@ -32,18 +32,18 @@
 ##from os.path import isfile, join
 ##import numpy
 ##import cv2
-## 
+##
 ##mypath='/path/to/folder'
 ##onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
 ##images = numpy.empty(len(onlyfiles), dtype=object)
 ##for n in range(0, len(onlyfiles)):
 ##  images[n] = cv2.imread( join(mypath,onlyfiles[n]) )
 
-    
+
 ####------------------Working down wala-------------
 # import numpy
 # import cv2
-# import glob 
+# import glob
 # import cv2
 # import sys
 # n=1
@@ -99,10 +99,10 @@
 
 # def leftclick(event):
 #     print("left")
-    
+
 # def printName(event):
 #     print("print")
-    
+
 # topFrame  = Frame(root, width = 300, height = 250)
 # topFrame.bind("<Button-1>", leftclick)
 # topFrame.pack()
@@ -143,7 +143,7 @@
 ##---------working image cv with tkinter no class-------------------
 # import tkinter
 # import cv2
-# import PIL.Image, PIL.ImageTk 
+# import PIL.Image, PIL.ImageTk
 # # Create a window
 # window = tkinter.Tk()
 # window.title("OpenCV and Tkinter")
@@ -182,14 +182,14 @@
 #         self.cv_img = cv2.resize(self.cv_img, (400, 400), interpolation=cv2.INTER_LINEAR)
 #          # Get the image dimensions (OpenCV stores image data as NumPy ndarray)
 #         self.height, self.width, no_channels = self.cv_img.shape
- 
+
 #          # Create a canvas that can fit the above image
 #         self.canvas = tkinter.Canvas(window, width = self.width, height = self.height)
 #         self.canvas.pack()
 
 #         # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
 #         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.cv_img))
- 
+
 #         # Add a PhotoImage to the Canvas
 #         self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
@@ -227,14 +227,51 @@
 # App(tkinter.Tk(), "Tkinter and OpenCV")
 
 ##-----------------------------setting up
-import numpy 
+import numpy
 import tkinter
 import cv2
 import PIL.Image, PIL.ImageTk
 import glob
-
+import json
 WIDTH = 400
 HEIGHT = 400
+# NOTE:
+class BlockchainRead:
+    def __init():
+        self.chainImage=[]
+        self.chainOffical=[]
+        self.chainImageText=[]
+
+
+    def load(self):
+        try:
+            with open('blockchain-5000.txt', mode='r') as f:
+                file_content = f.readlines()
+                blockchain = json.loads(file_content[0][:-1])
+
+                updatedChainImage=[]
+                updatedChainOffical=[]
+                updatedChainImageText=[]
+
+                for block in blockchain:
+                    for tx in block['transactions']:
+
+
+                        updatedChainImage.append(tx['image'])
+                        updatedChainImageText.append(tx['imageText'])
+                        updatedChainOffical.append(tx['official'])
+                self.chainImage = updatedChainImage
+                self.chainImageText = updatedChainImageText
+                self.chainOffical = updatedChainOffical
+
+        except (IOError, IndexError):
+            pass
+        finally:
+            print('Cleanup!')
+    def show(self):
+        print(self.chainImage)
+
+
 class App:
     def __init__(self, window, window_title, file_path):
         self.window = window
@@ -252,18 +289,18 @@ class App:
         self.height, self.width, no_channels = self.cv_img.shape
         # self.width = WIDTH
         # self.height = HEIGHT
-        
+
         #Frame for canvas
         TopFrame  = tkinter.Frame(self.window, width = self.width, height = self.height, borderwidth = 0,highlightthickness=0)#, width = 60, height = 40)
         TopFrame.pack(anchor=tkinter.CENTER)#side=tkinter.TOP, expand = 1, fill = tkinter.BOTH)
-         
+
          # Create a canvas that can fit the above image
         self.canvas = tkinter.Canvas(TopFrame, width = self.width, height = self.height, borderwidth = 0,highlightthickness=0)
         self.canvas.pack()
 
         # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.cv_img))
- 
+
         # Add a PhotoImage to the Canvas
         self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
@@ -307,8 +344,8 @@ class App:
 
         self.window.mainloop()
 
-                
-            
+
+
     # Callback for the "Blur" button
     def blur_image(self):
         self.cv_img = cv2.blur(self.cv_img, (3, 3))
@@ -342,7 +379,19 @@ class App:
         exit()
 
 # Create a window and pass it to the Application object
-App(tkinter.Tk(), "Tkinter and OpenCV","./img")
+
+
+
+#App(tkinter.Tk(), "Tkinter and OpenCV","./img")
+a=BlockchainRead()
+a.load()
+a.show()
+print(a.chainOffical)
+text desplay gerna agadi imagePointer=base64.b64decode(a.chainImageText) ani image pointer lai print gara
+
+
+
+
 # import tkinter as tk
 
 # root = tk.Tk()

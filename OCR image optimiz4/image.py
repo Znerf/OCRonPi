@@ -3,7 +3,7 @@ import cv2
 import mapper
 
 
-img = cv2.imread("mobile.jpg")
+img = cv2.imread("ery1.jpg")
  
 img=cv2.resize(img,(700,700))
 _, threshold = cv2.threshold(img, 155, 255, cv2.THRESH_BINARY)
@@ -52,7 +52,7 @@ cv2.destroyAllWindows()
 
 
 # denoised = cv2.fastNlMeansDenoising(thresh, 11, 31, 9) # you may experiment with the constants here
-image=cv2.imread("a.jpg")   #read in the image
+image=cv2.imread("try.jpg")   #read in the image
 image=cv2.resize(image,(1300,800)) #resizing because opencv does not work well with bigger images
 orig=image.copy()
 
@@ -95,7 +95,7 @@ for c in contours:
 cv2.imshow("Scanned",img)
 
 
-
+cv2.imwrite('01.png',gaus)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

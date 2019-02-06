@@ -1,16 +1,31 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory,url_for
 from flask_cors import CORS
 
 from desk import Desk
 from blockchain import Blockchain
+from PIL import Image
+from  io import BytesIO
+import requests
+import socket
+import base64
+# import image_scraper
 
-app = Flask(__name__)
+
+app = Flask(__name__,static_url_path='/ui')
 CORS(app)
 
 
 @app.route('/', methods=['GET'])
 def get_node_ui():
     return send_from_directory('ui', 'node.html')
+
+@app.route('/bootstrap', methods=['GET'])
+def get_bootstrap():
+    print('asdf')
+    # url_for('ui', filename='bootstrap.min.css')
+    return render_template('bootstrap.min.css', name="boot")
+    # return app.send_static_file('ui/bootstrap.min.css')
+    # return send_from_directory('ui', 'bootstrap.min.css')
 
 
 @app.route('/network', methods=['GET'])
@@ -84,16 +99,97 @@ def broadcast_transaction():
         }
         return jsonify(response), 500
 
+def find_str(s, char):
+    index = 0
+
+    if char in s:
+        c = char[0]
+        for ch in s:
+            if ch == c:
+                if s[index:index+len(char)] == char:
+                    return index
+
+            index += 1
+
+    return -1
+
 
 @app.route('/getData', methods=['POST'])
 def getData():
-    values = request.get_json()
+    #import urllib
+
+    # f = urllib.urlopen(link)
+    # myfile = f.read()
+    # print (myfile)
+    # import urllib.request
+    # link = "http://localhost:5005/get"
+    # # image_scraper.scrape_images(link)
+    # # urllib.urlretrieve("local/google-logo.jpg", "local-filename.jpg")
+    #
+    # with urllib.request.urlopen(link) as url:
+    #     s = url.read()
+    # s=str(s)
+    # a=find_str(s,'*')
+    # b=find_str(s,'$')
+    # print(s[a:b])
+
+    # #I'm guessing this would output the html source code?
+    # print(s)
+    host = '127.0.0.1'
+    port = 5008
+
+    s = socket.socket()
+    s.connect((host, port))
+
+    filename = 'mage.png'
+    if filename != 'q':
+        s.send(filename.encode('utf-8'))
+        data = s.recv(1024)
+        # dat=str(data)
+        # print(data)
+        print (data)
+        if data[:6] == b'EXISTS':
+            filesize = int(data[6:])
+            print("File exists, "  +"Bytes, download? (Y/N)? -> ")
+
+            message='Y'
+            if message == 'Y':
+                s.send("OK".encode("utf-8"))
+                f = open('new_'+filename, 'wb')
+                data = s.recv(1024)
+                totalRecv = len(data)
+                f.write(data)
+                while totalRecv < filesize:
+                    data = s.recv(1024)
+                    totalRecv += len(data)
+                    f.write(data)
+                    print ("{0:.2f}".format((totalRecv/float(filesize))*100)+ "% Done")
+                print ("Download Complete!")
+                f.close()
+        else:
+            print ("File Does Not Exist!")
+
+    s.close()
+
+    # values = request.get_json()
+    # print(values)
+    # print(values)
+    # print('sd')
+    # response = {
+    #     'message': 'No wallet set up.'
+    # }
+    # return jsonify(response), 401
     load_keys()
+    # url='http://localhost:5005/get'
+    # response = requests.get(url)
+    # img = BytesIO(response.content)
+    # print(img)
     # print(values)
     # if not values:
     #     response = {'message': 'No data found.'}
     #     return jsonify(response), 400
     # if 'image' not in values:
+
     if desk.public_key == None:
         response = {
             'message': 'No wallet set up.'
@@ -110,12 +206,16 @@ def getData():
         response = {
             'message': 'Required data is missing.'
         }
-        return jsonify(response), 400
-    image = values['image']
+        return jsonify(response), 401
+    print('adfdaf')
+    f=open('new_mage.png',mode='rb')
+    a=str(base64.b64encode(f.read()))
+    image = a
     imageText = values['imageText']
     signature = desk.sign_transaction(desk.public_key, image, imageText)
     success = blockchain.add_transaction(
         desk.public_key,image, imageText, signature)
+    mine()
     if success:
         response = {
             'message': 'Successfully added transaction.',

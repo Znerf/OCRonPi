@@ -16,7 +16,7 @@ def get_node_ui():
 def getImage():
     values = request.get_json()
     #print(values)
-
+    print(values)
     if not values:
         response = {'message': 'No data found.'}
         return jsonify(response), 400
