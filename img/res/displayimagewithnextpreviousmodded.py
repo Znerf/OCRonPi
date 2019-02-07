@@ -32,18 +32,18 @@
 ##from os.path import isfile, join
 ##import numpy
 ##import cv2
-##
+## 
 ##mypath='/path/to/folder'
 ##onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
 ##images = numpy.empty(len(onlyfiles), dtype=object)
 ##for n in range(0, len(onlyfiles)):
 ##  images[n] = cv2.imread( join(mypath,onlyfiles[n]) )
 
-
+    
 ####------------------Working down wala-------------
 # import numpy
 # import cv2
-# import glob
+# import glob 
 # import cv2
 # import sys
 # n=1
@@ -99,10 +99,10 @@
 
 # def leftclick(event):
 #     print("left")
-
+    
 # def printName(event):
 #     print("print")
-
+    
 # topFrame  = Frame(root, width = 300, height = 250)
 # topFrame.bind("<Button-1>", leftclick)
 # topFrame.pack()
@@ -143,7 +143,7 @@
 ##---------working image cv with tkinter no class-------------------
 # import tkinter
 # import cv2
-# import PIL.Image, PIL.ImageTk
+# import PIL.Image, PIL.ImageTk 
 # # Create a window
 # window = tkinter.Tk()
 # window.title("OpenCV and Tkinter")
@@ -182,14 +182,14 @@
 #         self.cv_img = cv2.resize(self.cv_img, (400, 400), interpolation=cv2.INTER_LINEAR)
 #          # Get the image dimensions (OpenCV stores image data as NumPy ndarray)
 #         self.height, self.width, no_channels = self.cv_img.shape
-
+ 
 #          # Create a canvas that can fit the above image
 #         self.canvas = tkinter.Canvas(window, width = self.width, height = self.height)
 #         self.canvas.pack()
 
 #         # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
 #         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.cv_img))
-
+ 
 #         # Add a PhotoImage to the Canvas
 #         self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
@@ -227,125 +227,76 @@
 # App(tkinter.Tk(), "Tkinter and OpenCV")
 
 ##-----------------------------setting up
-import numpy
+import numpy 
 import tkinter
 import cv2
 import PIL.Image, PIL.ImageTk
 import glob
-import json
-WIDTH = 400
-HEIGHT = 400
-# NOTE:
-class BlockchainRead:
-    def __init():
-        self.chainImage=[]
-        self.chainOffical=[]
-        self.chainImageText=[]
-
-
-    def load(self):
-        try:
-            with open('blockchain-5000.txt', mode='r') as f:
-                file_content = f.readlines()
-                blockchain = json.loads(file_content[0][:-1])
-
-                updatedChainImage=[]
-                updatedChainOffical=[]
-                updatedChainImageText=[]
-
-                for block in blockchain:
-                    for tx in block['transactions']:
-
-
-                        updatedChainImage.append(tx['image'])
-                        updatedChainImageText.append(tx['imageText'])
-                        updatedChainOffical.append(tx['official'])
-                self.chainImage = updatedChainImage
-                self.chainImageText = updatedChainImageText
-                self.chainOffical = updatedChainOffical
-
-        except (IOError, IndexError):
-            pass
-        finally:
-            print('Cleanup!')
-    def show(self):
-        print(self.chainImage)
 
 
 class App:
     def __init__(self, window, window_title, file_path):
         self.window = window
         self.window.title(window_title)
-        self.window.geometry("+100+100")
-        # self.window.geometry("+%d+%d" % (self.window_start_x, self.window_start_y))
         #listing files from folder
         self.image_path = glob.glob(file_path+'/*.*')
         self.numberOfFiles = len(self.image_path)
         self.flag = 0;
         # Load an image using OpenCV
         self.cv_img = cv2.cvtColor(cv2.imread(self.image_path[self.flag]), cv2.COLOR_BGR2RGB)
-        self.cv_img = cv2.resize(self.cv_img, (400, 400), interpolation=cv2.INTER_LINEAR)
+        self.cv_img = cv2.resize(self.cv_img, (500, 400), interpolation=cv2.INTER_LINEAR)
          # Get the image dimensions (OpenCV stores image data as NumPy ndarray)
         self.height, self.width, no_channels = self.cv_img.shape
-        # self.width = WIDTH
-        # self.height = HEIGHT
-
-        #Frame for canvas
-        TopFrame  = tkinter.Frame(self.window, width = self.width, height = self.height, borderwidth = 0,highlightthickness=0)#, width = 60, height = 40)
-        TopFrame.pack(anchor=tkinter.CENTER)#side=tkinter.TOP, expand = 1, fill = tkinter.BOTH)
-
+        print(self.width,self.height)
+        
          # Create a canvas that can fit the above image
-        self.canvas = tkinter.Canvas(TopFrame, width = self.width, height = self.height, borderwidth = 0,highlightthickness=0)
+        self.canvas = tkinter.Canvas(window, width = self.width, height = self.height, borderwidth = 0)
         self.canvas.pack()
 
         # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.cv_img))
-
+ 
         # Add a PhotoImage to the Canvas
         self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
 
-
-        # Frame for Button
-        ButtomFrame  = tkinter.Frame(self.window, width = 60, height = 40)
-        ButtomFrame.pack(side=tkinter.BOTTOM, fill = tkinter.X)
         # Button that lets the user to view previous image
         #self.btn=tkinter.Button(window, text="Previous", command=self.previous_image, bg = "green", fg = "white")
         #self.icon_p = PIL.ImageTk.PhotoImage(PIL.Image.open("./res/4p_25.png"))
         self.icon_p = PIL.Image.open("./res/4p.png")
         self.icon_p = self.icon_p.resize((25,25))
         self.icon_p = PIL.ImageTk.PhotoImage(self.icon_p)
-        self.btn=tkinter.Button(ButtomFrame, text="Previous", width=60, height=40, command=self.previous_image, borderwidth=10,highlightthickness=0)
-        self.btn.pack(side=tkinter.LEFT,expand = 1, fill = tkinter.BOTH)
+        self.btn=tkinter.Button(window, text="Previous",command=self.previous_image, borderwidth=10)
+        self.btn.pack(side=tkinter.LEFT,expand = 1)
         self.btn.config(image = self.icon_p,compound = tkinter.TOP)
-        # print('outside class', 'icon ', self.icon_p,'window ', window,'command', self.exit,'side ',tkinter.LEFT, 'expand ', 0, 'compound ', tkinter.TOP)
+        print('outside class', 'icon ', self.icon_p,'window ', window,'command', self.exit,'side ',tkinter.LEFT, 'expand ', 0, 'compound ', tkinter.TOP)
         # Button that lets the user blur the image
         self.icon_b = PIL.Image.open("./res/3h.png")
         self.icon_b = self.icon_b.resize((25,25))
         self.icon_b = PIL.ImageTk.PhotoImage(self.icon_b)
-        self.btn=tkinter.Button(ButtomFrame, text="Blur", width=60, height=40, command=self.blur_image, borderwidth=10,highlightthickness=0)
-        self.btn.pack(side=tkinter.LEFT,expand = 1, fill = tkinter.BOTH)
+        self.btn=tkinter.Button(window, text="Blur", width=60, command=self.blur_image, borderwidth=10)
+        self.btn.pack(side=tkinter.LEFT,expand = 1)
         self.btn.config(image = self.icon_b,compound = tkinter.TOP)
         # Button that lets the user to view next image
         self.icon_n = PIL.Image.open("./res/4n.png")
         self.icon_n = self.icon_n.resize((25,25))
         self.icon_n = PIL.ImageTk.PhotoImage(self.icon_n)
-        self.btn=tkinter.Button(ButtomFrame, text="Next",  width=60, height=40, command=self.next_image, borderwidth=10,highlightthickness=0)
-        self.btn.pack(side=tkinter.LEFT,expand = 1, fill = tkinter.BOTH)
+        self.btn=tkinter.Button(window, text="Next",  width=60, command=self.next_image, borderwidth=10)
+        self.btn.pack(side=tkinter.LEFT,expand = 1)
         self.btn.config(image = self.icon_n,compound = tkinter.TOP)
         #Button that lets the user to exit the app
         self.icon_e = PIL.Image.open("./res/6e.png")
         self.icon_e = self.icon_e.resize((50,25))
         self.icon_e = PIL.ImageTk.PhotoImage(self.icon_e)
-        self.btn=tkinter.Button(ButtomFrame, command=self.exit, height=40, borderwidth=10,highlightthickness=0)
-        self.btn.pack(side=tkinter.RIGHT,expand = 1, fill = tkinter.BOTH)
+        self.btn=tkinter.Button(window, command=self.exit, borderwidth=10)
+        self.btn.pack(side=tkinter.RIGHT,expand = 0)
         self.btn.config(image = self.icon_e,compound = tkinter.TOP)
 
 
 
         self.window.mainloop()
 
-
-
+                
+            
     # Callback for the "Blur" button
     def blur_image(self):
         self.cv_img = cv2.blur(self.cv_img, (3, 3))
@@ -367,7 +318,7 @@ class App:
     def next_image(self):
         self.flag += 1
         if(self.flag >= (self.numberOfFiles-1)):
-            print('Last image')
+            print('Last image reached')
             self.flag = self.numberOfFiles-1
         self.cv_img = cv2.cvtColor(cv2.imread(self.image_path[self.flag]), cv2.COLOR_BGR2RGB)
         self.cv_img = cv2.resize(self.cv_img, (400, 400), interpolation=cv2.INTER_LINEAR)
@@ -379,26 +330,4 @@ class App:
         exit()
 
 # Create a window and pass it to the Application object
-
-
-
 App(tkinter.Tk(), "Tkinter and OpenCV","./img")
-a=BlockchainRead()
-a.load()
-a.show()
-print(a.chainOffical)
-# text desplay gerna agadi imagePointer=base64.b64decode(a.chainImageText) ani image pointer lai print gara
-
-
-
-
-# import tkinter as tk
-
-# root = tk.Tk()
-# frame1 = tk.Frame(root, width=100, height=100, background="red")
-# frame2 = tk.Frame(root, width=50, height = 50, background="black")
-
-# frame1.pack(fill=None, expand=False)
-# frame2.place(relx=.5, rely=.5, anchor="c")
-
-# root.mainloop()

@@ -210,6 +210,7 @@ def getData():
     print('adfdaf')
     f=open('new_mage.png',mode='rb')
     a=str(base64.b64encode(f.read()))
+    print (a)
     image = a
     imageText = values['imageText']
     signature = desk.sign_transaction(desk.public_key, image, imageText)
